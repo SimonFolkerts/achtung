@@ -5,8 +5,9 @@ export default class PzkwProj {
     this.height = 50;
 
     this.angle = angle;
-    this.vel = 50;
-    this.position = {x: x, y: y};
+    this.vel = 5;
+    this.position = { x: x, y: y };
+    this.origin = { x: x, y: y };
   }
 
   update() {
@@ -18,9 +19,20 @@ export default class PzkwProj {
 
   draw(ctx) {
     ctx.save();
+
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.moveTo(this.origin.x, this.origin.y);
     ctx.translate(this.position.x, this.position.y);
     ctx.rotate(this.angle);
-    ctx.fillRect(-this.width / 2, -this.height, this.width, this.height);
+
+    ctx.lineTo(-2, -this.height + 3);
+    ctx.lineTo(0, -this.height);
+    ctx.lineTo(2, -this.height + 3);
+
     ctx.restore();
+
+    ctx.lineTo(this.origin.x, this.origin.y);
+    ctx.stroke();
   }
 }
