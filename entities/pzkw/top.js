@@ -5,11 +5,11 @@ export default class PzkwTop {
     sim.entities.push(this);
     this.base = base;
     this.sim = sim;
-    this.width = 60;
-    this.height = 80;
+    this.width = 30;
+    this.height = 40;
 
-    this.angle = 0;
-    this.angVel = 0.05;
+    this.angle = 0.5;
+    this.angVel = 0.03;
 
     this.mousePosition = { x: 0, y: 0 };
 
@@ -31,10 +31,28 @@ export default class PzkwTop {
 
   update() {
     // rotation
-    this.angle = Math.atan2(
+    let oldAngle = this.angle;
+    let cursorAngle = Math.atan2(
       this.mousePosition.x - this.base.position.x,
       this.position.y - this.mousePosition.y
     );
+    if (cursorAngle < 0) {
+      cursorAngle = 2 * Math.PI + cursorAngle;
+    }
+    let offsetAngle = cursorAngle - this.angle;
+    if (offsetAngle >= Math.PI) {
+      offsetAngle = offsetAngle - 2 * Math.PI;
+    } else if (offsetAngle <= -Math.PI) {
+      offsetAngle = offsetAngle + 2 * Math.PI;
+    }
+    if (offsetAngle > this.angVel) {
+      this.angle += this.angVel + this.base.turnRate;
+    } else if (offsetAngle < -this.angVel) {
+      this.angle -= this.angVel - this.base.turnRate;
+    } else {
+      this.angle = cursorAngle;
+    }
+    let deltaAngle = oldAngle - this.angle;
   }
 
   draw(ctx) {
@@ -43,18 +61,18 @@ export default class PzkwTop {
     ctx.rotate(this.angle);
     // ctx.fillRect(-this.width / 2, -this.height, this.width, this.height);
     ctx.fillStyle = "#FFFFFF";
-    ctx.lineWidth = 10;
+    ctx.lineWidth = 5;
     ctx.beginPath();
-    ctx.moveTo(-2, -this.height);
-    ctx.lineTo(2, -this.height);
-    ctx.lineTo(2, -30);
-    ctx.lineTo(25, -15);
-    ctx.lineTo(25, 35);
-    ctx.lineTo(0, 38);
-    ctx.lineTo(-25, 35);
-    ctx.lineTo(-25, -15);
-    ctx.lineTo(-2, -30);
-    ctx.lineTo(-2, -this.height);
+    ctx.moveTo(-1.5, -this.height);
+    ctx.lineTo(1.5, -this.height);
+    ctx.lineTo(1.5, -15);
+    ctx.lineTo(12, -10);
+    ctx.lineTo(12, 20);
+    ctx.lineTo(0, 22);
+    ctx.lineTo(-12, 20);
+    ctx.lineTo(-12, -10);
+    ctx.lineTo(-1.5, -15);
+    ctx.lineTo(-1.5, -this.height);
     ctx.lineTo(2, -this.height);
     ctx.stroke();
     ctx.fill();
