@@ -14,6 +14,9 @@ export default class Sim {
   }
 
   update() {
+    this.entities = this.entities.filter((entity) => {
+      return !entity.deleteMe;
+    })
     for (const entity of this.entities) {
       entity.update();
     }

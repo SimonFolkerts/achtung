@@ -1,7 +1,9 @@
 import PzkwTop from "../pzkw/top.js";
+import Tread from "../effects/tread.js"
 export default class PzkwBase {
   constructor(sim, position) {
     sim.entities.push(this);
+    this.sim = sim;
     this.width = 30;
     this.height = 50;
 
@@ -13,6 +15,8 @@ export default class PzkwBase {
     this.accel = 0;
     this.dx;
     this.dy;
+
+    this.canTread = true;
 
     this.position = position;
     this.keys = {
@@ -53,6 +57,13 @@ export default class PzkwBase {
     }
 
     this.speed += this.accel;
+    // if (this.speed && this.canTread) {
+    //   new Tread(this.sim, this, this.position.x, this.position.y, this.angle);
+    //   this.canTread = false;
+    //   setTimeout(() => {
+    //     this.canTread = true
+    //   }, 50);
+    // }
 
     this.dx = Math.cos(this.angle - Math.PI / 2) * this.speed;
     this.dy = Math.sin(this.angle - Math.PI / 2) * this.speed;
@@ -72,8 +83,6 @@ export default class PzkwBase {
     ctx.rotate(this.angle);
     // ctx.fillRect(-this.width / 2, -this.height / 2, this.width, this.height);
 
-    ctx.fillStyle = "#FFFFFF";
-    ctx.lineWidth = 5;
     ctx.beginPath();
     ctx.moveTo(-this.width / 2, -this.height / 2 + 5);
     ctx.lineTo(0, -this.height / 2);
@@ -82,6 +91,9 @@ export default class PzkwBase {
     ctx.lineTo(-this.width / 2, this.height / 2);
     ctx.lineTo(-this.width / 2, -this.height / 2 + 5);
     ctx.lineTo(0, -this.height / 2);
+
+    ctx.fillStyle = "#FFFFFF";
+    ctx.lineWidth = 5;
     ctx.stroke();
     ctx.fill();
     ctx.restore();

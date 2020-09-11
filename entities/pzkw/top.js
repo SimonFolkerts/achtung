@@ -21,15 +21,31 @@ export default class PzkwTop {
     });
 
     document.addEventListener("click", () => {
-      this.fire(this.sim);
+      if (this.canFire && this.onTarget) {
+        this.fire(this.sim);
+      }
     });
+
+    this.canFire = true;
+    this.onTarget
+    this.barrel = -this.height;
   }
 
   fire(sim) {
     new PzkwProj(sim, this.position.x, this.position.y, this.angle);
+    this.canFire = false;
+    setTimeout(() => {
+      this.canFire = true;
+    }, 1000);
+    this.barrel = -this.height + 10;
   }
 
   update() {
+    // barrel
+
+    if (this.barrel > -this.height) {
+      this.barrel--;
+    }
     // rotation
 
     // bearing from entity to cursor
@@ -55,10 +71,13 @@ export default class PzkwTop {
     // if entity is off angle by more than the delta angle per tick, track towards the target angle steadily, otherwise if within one ticks roatation, track directly
     if (offsetAngle > this.angVel) {
       this.angle += this.angVel + this.base.turnRate;
+      this.onTarget = false;
     } else if (offsetAngle < -this.angVel) {
       this.angle -= this.angVel - this.base.turnRate;
+      this.onTarget = false;
     } else {
       this.angle = cursorAngle;
+      this.onTarget = true
     }
   }
 
@@ -67,11 +86,10 @@ export default class PzkwTop {
     ctx.translate(this.position.x, this.position.y);
     ctx.rotate(this.angle);
     // ctx.fillRect(-this.width / 2, -this.height, this.width, this.height);
-    ctx.fillStyle = "#FFFFFF";
-    ctx.lineWidth = 5;
+
     ctx.beginPath();
-    ctx.moveTo(-1.5, -this.height);
-    ctx.lineTo(1.5, -this.height);
+    ctx.moveTo(-1.5, this.barrel);
+    ctx.lineTo(1.5, this.barrel);
     ctx.lineTo(1.5, -15);
     ctx.lineTo(12, -10);
     ctx.lineTo(12, 20);
@@ -79,8 +97,11 @@ export default class PzkwTop {
     ctx.lineTo(-12, 20);
     ctx.lineTo(-12, -10);
     ctx.lineTo(-1.5, -15);
-    ctx.lineTo(-1.5, -this.height);
-    ctx.lineTo(2, -this.height);
+    ctx.lineTo(-1.5, this.barrel);
+    ctx.lineTo(2, this.barrel);
+
+    ctx.fillStyle = "#FFFFFF";
+    ctx.lineWidth = 5;
     ctx.stroke();
     ctx.fill();
     ctx.restore();
