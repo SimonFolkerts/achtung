@@ -7,6 +7,7 @@ export default class Sim {
     this.width = board.width;
     this.height = board.height;
     this.entities = [];
+    this.effects = [];
   }
   start() {
     const base = new Base(this, { x: 400, y: 300 });
@@ -14,17 +15,24 @@ export default class Sim {
   }
 
   update() {
+    this.effects = this.effects.filter((effect) => {
+      return !effect.deleteMe;
+    });
     this.entities = this.entities.filter((entity) => {
       return !entity.deleteMe;
     });
-    for (const entity of this.entities) {
-      entity.update();
+    for (let array of [this.entities, this.effects]) {
+      for (const entity of array) {
+        entity.update();
+      }
     }
   }
 
   draw(ctx) {
-    for (const entity of this.entities) {
-      entity.draw(ctx);
+    for (const array of [this.effects, this.entities]) {
+      for (const entity of array) {
+        entity.draw(ctx);
+      }
     }
   }
 }
