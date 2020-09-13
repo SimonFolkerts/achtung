@@ -20,14 +20,14 @@ export default class PzkwTop {
       this.mousePosition = this.cursorTracker.getMousePos(evt);
     });
 
-    document.addEventListener("click", () => {
+    document.addEventListener("mousedown", () => {
       if (this.canFire && this.onTarget) {
         this.fire(this.sim);
       }
     });
 
     this.canFire = true;
-    this.onTarget
+    this.onTarget;
     this.barrel = -this.height;
   }
 
@@ -77,7 +77,7 @@ export default class PzkwTop {
       this.onTarget = false;
     } else {
       this.angle = cursorAngle;
-      this.onTarget = true
+      this.onTarget = true;
     }
   }
 

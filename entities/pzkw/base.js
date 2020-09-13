@@ -1,5 +1,5 @@
 import PzkwTop from "../pzkw/top.js";
-import Tread from "../effects/tread.js"
+import Tread from "../effects/tread.js";
 export default class PzkwBase {
   constructor(sim, position) {
     sim.entities.push(this);
@@ -15,8 +15,10 @@ export default class PzkwBase {
     this.accel = 0;
     this.dx;
     this.dy;
+    this.tdx = 0;
+    this.tdy = 0;
 
-    this.canTread = true;
+    this.treadClock = 0;
 
     this.position = position;
     this.keys = {
@@ -57,14 +59,6 @@ export default class PzkwBase {
     }
 
     this.speed += this.accel;
-    // if (this.speed && this.canTread) {
-    //   new Tread(this.sim, this, this.position.x, this.position.y, this.angle);
-    //   this.canTread = false;
-    //   setTimeout(() => {
-    //     this.canTread = true
-    //   }, 50);
-    // }
-
     this.dx = Math.cos(this.angle - Math.PI / 2) * this.speed;
     this.dy = Math.sin(this.angle - Math.PI / 2) * this.speed;
     // displacement magnitudes
@@ -75,6 +69,16 @@ export default class PzkwBase {
     if (Math.abs(this.speed) < 0.1 && !this.drive) {
       this.speed = 0;
     }
+
+    this.tdx += this.dx;
+    this.tdy += this.dy;
+
+    if (Math.abs(this.tdx) + Math.abs(this.tdy) > 6) {
+      new Tread(this.sim, this.position.x, this.position.y, this.angle);
+      this.tdx = 0;
+      this.tdy = 0;
+    }
+    this.treadClock++;
   }
 
   draw(ctx) {
